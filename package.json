@@ -1,0 +1,34 @@
+{
+  "name": "master-thesis",
+  "version": "1.0.0",
+  "description": "Posterior Error Probability Estimation for Peptide Search Engine Results in OpenMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server .",
+    "scss": "node-sass --watch ./src/assets/style/scss -o ./src/assets/style/css",
+    "pretty-quick": "pretty-quick"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sophiamersmann/master-thesis.git"
+  },
+  "author": "Sophia Mersmann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sophiamersmann/master-thesis/issues"
+  },
+  "homepage": "https://github.com/sophiamersmann/master-thesis#readme",
+  "devDependencies": {
+    "http-server": "^0.12.3",
+    "husky": "^4.2.5",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "sass-node": "^4.11.2"
+  }
+}
