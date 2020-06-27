@@ -23,6 +23,10 @@
   .meta-heading {
     margin-bottom: 2px;
   }
+
+  .meta-body {
+    line-height: 1.25;
+  }
 }
 
 article {
@@ -40,7 +44,8 @@ article {
 
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     margin-bottom: $spacing / 4;
     font-weight: $bold;
     line-height: 1.2;
@@ -52,6 +57,15 @@ article {
 
   h2 {
     font-size: 1.6rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    margin-bottom: $spacing / 6;
   }
 
   p {
@@ -212,6 +226,7 @@ table {
   left: 0;
   height: 1rem;
   background-color: $gray;
+  border-radius: 0;
 
   .progress-bar {
     background-color: $primary;

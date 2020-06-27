@@ -22,6 +22,9 @@
 .meta .meta-heading {
   margin-bottom: 2px;
 }
+.meta .meta-body {
+  line-height: 1.25;
+}
 
 article {
   padding: 0 1rem;
@@ -36,7 +39,8 @@ article .abstract {
 }
 article h1,
 article h2,
-article h3 {
+article h3,
+article h4 {
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
@@ -46,6 +50,13 @@ article h1 {
 }
 article h2 {
   font-size: 1.6rem;
+}
+article h3 {
+  font-size: 1.3rem;
+}
+article h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.33333rem;
 }
 article p {
   margin-bottom: 1rem;
@@ -190,6 +201,7 @@ table tbody + tbody {
   left: 0;
   height: 1rem;
   background-color: #e9ecef;
+  border-radius: 0;
 }
 .progress .progress-bar {
   background-color: #fcba03;
