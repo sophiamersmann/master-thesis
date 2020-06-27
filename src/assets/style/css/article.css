@@ -163,7 +163,6 @@ table tbody + tbody {
   display: block !important;
   height: 0.25px;
   margin-bottom: 1rem;
-  border: 0;
   background: #fcba03;
   color: #fcba03;
 }
