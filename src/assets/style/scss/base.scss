@@ -101,17 +101,6 @@ html {
       margin: 0;
     }
 
-    .article-separator {
-      margin: $spacing / 2;
-
-      &:first-of-type {
-        display: none;
-        @include max-width($extra-small) {
-          display: block;
-        }
-      }
-    }
-
     .item {
       display: flex;
       padding: $spacing / 2;

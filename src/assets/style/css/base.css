@@ -116,17 +116,6 @@ html .content {
     margin: 0;
   }
 }
-html .content .article-separator {
-  margin: 1rem;
-}
-html .content .article-separator:first-of-type {
-  display: none;
-}
-@media screen and (max-width: 575.98px) {
-  html .content .article-separator:first-of-type {
-    display: block;
-  }
-}
 html .content .item {
   display: flex;
   padding: 1rem;
