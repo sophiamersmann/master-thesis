@@ -1,0 +1,16 @@
+,engine,feature,difference
+0,xtandem,sibling-scores,0.12732750106566565
+1,xtandem,sibling-modifications,0.02475459625311329
+2,xtandem,sibling-ions,0.06810723033451291
+3,xtandem,replicate-spectra,0.0007515193945303433
+4,xtandem,precursor-scores,0.006388700770981566
+5,msgf,sibling-scores,0.3656984299104459
+6,msgf,sibling-modifications,0.0011685671886066534
+7,msgf,sibling-ions,0.1727707261346914
+8,msgf,replicate-spectra,0.001432531596273422
+9,msgf,precursor-scores,0.010671887736692472
+10,comet,sibling-scores,0.4097729853886801
+11,comet,sibling-modifications,0.054762390307338586
+12,comet,sibling-ions,0.17000898894716748
+13,comet,replicate-spectra,0.008233489800162086
+14,comet,precursor-scores,0.019804729976650004

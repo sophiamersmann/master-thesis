@@ -1,0 +1,92 @@
+figure svg {
+  overflow: visible;
+}
+
+figure .single {
+  width: 90%;
+  margin: 1rem auto;
+}
+
+figure .right {
+  position: absolute;
+  transform: translateX(650px);
+}
+@media screen and (max-width: 991.98px) {
+  figure .right {
+    display: none;
+  }
+}
+
+figure .plot-pair {
+  display: flex;
+  width: 90%;
+  margin: 1rem auto;
+}
+figure .plot-pair > div {
+  flex: 1 1 auto;
+}
+
+figure .axis-y text,
+figure .label {
+  font-size: 0.9rem;
+}
+
+.figure0307-A .axis-y line,
+.figure0307-A .axis-y path {
+  visibility: hidden;
+}
+
+#figure07-B {
+  display: none;
+}
+
+#figure08 .axis line,
+#figure08 .axis path {
+  visibility: hidden;
+}
+
+@media screen and (max-width: 575.98px) {
+  #figure08 .legend {
+    transform: translateX(-80px);
+  }
+}
+
+#figure08 .legend .title {
+  font-size: 0.8rem;
+}
+
+#figure08 .legend text {
+  font-size: 0.7rem;
+}
+
+#figure08 .tooltip {
+  position: absolute;
+  width: 200px;
+  height: 50px;
+  padding: 2px;
+  border-radius: 25px;
+  background: #ebebeb;
+  font-size: 0.7rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.super-title {
+  width: 40%;
+  margin: 0 auto 2rem;
+  font-size: 1.2rem;
+}
+.super-title .title-percolator {
+  float: left;
+  color: steelblue;
+}
+.super-title .title-idpep {
+  float: right;
+  color: orange;
+}
+
+@media screen and (max-width: 991.98px) {
+  .hide-when-small {
+    display: none;
+  }
+}

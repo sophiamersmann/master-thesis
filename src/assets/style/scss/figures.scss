@@ -1,0 +1,101 @@
+@import "global";
+
+figure {
+  svg {
+    overflow: visible;
+  }
+
+  .single {
+    width: 90%;
+    margin: $spacing / 2 auto;
+  }
+
+  .right {
+    position: absolute;
+    transform: translateX(650px);
+    @include max-width($medium) {
+      display: none;
+    }
+  }
+
+  .plot-pair {
+    display: flex;
+    width: 90%;
+    margin: $spacing / 2 auto;
+
+    & > div {
+      flex: 1 1 auto;
+    }
+  }
+
+  .axis-y text,
+  .label {
+    font-size: 0.9rem;
+  }
+}
+
+.figure0307-A {
+  .axis-y line,
+  .axis-y path {
+    visibility: hidden;
+  }
+}
+
+#figure07-B {
+  display: none;
+}
+
+#figure08 {
+  .axis line,
+  .axis path {
+    visibility: hidden;
+  }
+
+  .legend {
+    @include max-width($extra-small) {
+      transform: translateX(-80px);
+    }
+
+    .title {
+      font-size: 0.8rem;
+    }
+
+    text {
+      font-size: 0.7rem;
+    }
+  }
+
+  .tooltip {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    padding: 2px;
+    border-radius: 25px;
+    background: #ebebeb;
+    font-size: 0.7rem;
+    text-align: center;
+    pointer-events: none;
+  }
+}
+
+.super-title {
+  width: 40%;
+  margin: 0 auto $spacing;
+  font-size: 1.2rem;
+
+  .title-percolator {
+    float: left;
+    color: steelblue;
+  }
+
+  .title-idpep {
+    float: right;
+    color: orange;
+  }
+}
+
+.hide-when-small {
+  @include max-width($medium) {
+    display: none;
+  }
+}

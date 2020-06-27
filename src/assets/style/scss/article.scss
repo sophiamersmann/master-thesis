@@ -1,0 +1,280 @@
+@import "global";
+
+.banner {
+  border-top: 3px solid $secondary;
+  border-bottom: 3px solid $secondary;
+  background-color: $secondary-fade;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+
+  & > div {
+    flex: 1 0 0;
+    padding: 0 $spacing / 4;
+    @include max-width($extra-small) {
+      flex: 1 0 50%;
+      margin-bottom: $spacing / 4;
+    }
+  }
+
+  .meta-heading {
+    margin-bottom: 2px;
+  }
+}
+
+article {
+  padding: 0 $spacing / 2;
+
+  &.first {
+    padding: $spacing / 2 $spacing / 2 0;
+  }
+
+  .abstract {
+    margin-bottom: 0;
+    color: gray;
+    font-weight: $light;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin-bottom: $spacing / 4;
+    font-weight: $bold;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 2.1rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  p {
+    margin-bottom: $spacing / 2;
+    line-height: 1.5;
+    text-align: justify;
+  }
+}
+
+figure {
+  margin: $spacing / 2 0;
+  text-align: center;
+
+  &.plot {
+    margin: 0;
+  }
+
+  &.fig-table figcaption {
+    margin-bottom: $spacing / 2;
+  }
+
+  figcaption {
+    font-size: 0.9rem;
+    line-height: 1.25;
+    text-align: justify;
+  }
+
+  .caption-number {
+    color: $primary;
+  }
+
+  .caption-text {
+    color: gray;
+  }
+}
+
+table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+  @include max-width($extra-small) {
+    font-size: 0.7rem;
+  }
+
+  tbody,
+  thead {
+    border-top: 2px solid $gray;
+    border-bottom: 2px solid $gray;
+  }
+
+  td,
+  th {
+    padding: 0.75rem;
+    border-top: 1px solid $gray;
+    vertical-align: top;
+  }
+
+  thead th {
+    border-bottom: 2px solid $gray;
+    vertical-align: bottom;
+  }
+
+  tbody td,
+  tbody th,
+  thead th {
+    text-align: left;
+  }
+
+  tbody th[rowspan="4"] {
+    vertical-align: middle;
+  }
+
+  tbody + tbody {
+    border-top: 2px solid $gray;
+  }
+}
+
+.table-rotate {
+  .rotate {
+    height: 120px;
+    white-space: nowrap;
+
+    & > div {
+      @include rotate(-35deg);
+      width: 1rem;
+      @include max-width($small) {
+        @include rotate(-90deg);
+      }
+    }
+  }
+}
+
+.dot {
+  display: inline-block;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+
+  &.dot-negative {
+    background-color: #bbb;
+  }
+
+  &.dot-positive {
+    background-color: #fcba03;
+  }
+}
+
+.list-of-references {
+  margin-top: 5rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+
+  hr {
+    display: block !important;
+    height: 0.25px;
+    margin-bottom: $spacing / 2;
+    border: 0;
+    background: $primary;
+    color: $primary;
+  }
+
+  .ref .title {
+    font-weight: $bold;
+  }
+
+  .ref .journal {
+    font-style: italic;
+  }
+}
+
+.ref-wrapper {
+  display: flex;
+
+  .ref-number {
+    flex: 0 1 auto;
+    margin-right: $spacing / 2;
+    font-family: monospace;
+  }
+
+  .ref {
+    flex: 1 0 0;
+  }
+}
+
+.cite {
+  color: $primary;
+
+  &.cite-ref {
+    font-family: monospace;
+  }
+}
+
+.progress {
+  display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1rem;
+  background-color: $gray;
+
+  .progress-bar {
+    background-color: $primary;
+    transition: width 0.6s ease;
+  }
+}
+
+.logo-bar {
+  // add space for progress bar on small devices
+  @include max-width($extra-small) {
+    margin-top: $spacing;
+  }
+}
+
+.table-of-content-wrapper {
+  position: fixed;
+  top: 50%;
+  padding: $spacing $spacing $spacing 0;
+  transform: translateY(-50%);
+  @include max-width($medium) {
+    display: none;
+  }
+
+  #table-of-content {
+    max-width: 250px;
+    margin-left: 20px;
+    border-left: 3px solid $primary;
+    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+
+    .heading {
+      color: $primary !important;
+    }
+
+    .list-group-item {
+      display: block;
+      padding: $spacing / 8 $spacing / 2;
+      border: none;
+      background-color: transparent;
+      color: #495057;
+      line-height: 1rem;
+    }
+    /* First level indentation */
+    .list-group .list-group-item {
+      padding-left: $spacing / 2;
+    }
+    /* Second level indentation */
+    .list-group-l2 .list-group-item {
+      padding-left: $spacing;
+    }
+    /* Third level indentation */
+    .list-group-l3 .list-group-item {
+      padding-left: $spacing * 2;
+    }
+
+    .list-group-item-action:hover {
+      background-color: whitesmoke;
+    }
+
+    .list-group-item-action.active {
+      border: none;
+      color: black;
+      font-weight: $bold;
+    }
+  }
+}

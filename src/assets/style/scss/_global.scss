@@ -1,0 +1,29 @@
+$spacing: 2rem;
+
+// colours
+$gray: #e9ecef;
+$primary: #fcba03;
+$secondary: #336699;
+$secondary-light: #bedcee;
+$secondary-fade: #fcfcfc;
+
+// breakpoints
+$extra-small: 575.98px;
+$small: 767.98px;
+$medium: 991.98px;
+$large: 1199.98px;
+
+$light: 300;
+$bold: 500;
+
+@mixin max-width($device) {
+  @media screen and (max-width: $device) {
+    @content;
+  }
+}
+
+@mixin rotate($degree) {
+  -webkit-transform: rotate($degree);
+  -ms-transform: rotate($degree);
+  transform: rotate($degree);
+}

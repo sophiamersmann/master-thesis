@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    
+    <meta name="author" content="Sophia Mersmann" />
+    <title>
+      Posterior Error Probability Estimation for Peptide Search Engine Results
+      in OpenMS
+    </title>
+    <link rel="icon" href="src/assets/img/memoji-428x428.png" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="src/assets/style/css/base.css" />
+    <link rel="stylesheet" href="src/assets/style/css/article.css" />
+    <link rel="stylesheet" href="src/assets/style/css/figures.css" />
+
+    <!-- jQuery, popper.js and boostrap.js (required for scrollspy) -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Render LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <!-- Maths -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.10.3/math.min.js"></script>
+
+    <script src="src/assets/js/references.js"></script>
+    <script src="src/assets/js/thesis.js"></script>
+
+    <!-- Figures -->
+    <script defer src="https://d3js.org/d3.v5.min.js"></script>
+    <script defer src="src/assets/js/figs/helper.js"></script>
+    <script defer src="src/assets/js/figs/helper-dist.js"></script>
+    <script defer src="src/assets/js/figs/helper-multiples.js"></script>
+    <script defer src="src/assets/js/figs/helper-swarm.js"></script>
+    <script defer src="src/assets/js/figs/fig03.js"></script>
+    <script defer src="src/assets/js/figs/fig04.js"></script>
+    <script defer src="src/assets/js/figs/fig05.js"></script>
+    <script defer src="src/assets/js/figs/fig06.js"></script>
+    <script defer src="src/assets/js/figs/fig07.js"></script>
+    <script defer src="src/assets/js/figs/fig08.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target="#table-of-content" data-offset="30">
+    <!-- Dynamic table of content -->
+    <div class="table-of-content-wrapper">
+      <div id="table-of-content" class="list-group">
+        <strong class="list-group-item heading">TABLE OF CONTENT</strong>
+        <span>
+          <a
+            class="list-group-item list-group-item-action no-style"
+            href="#heading-1"
+          >
+            Introduction
+          </a>
+        </span>
+        <div class="list-group list-group-l2">
+          <span>
+            <a
+              class="list-group-item list-group-item-action no-style"
+              href="#heading-1-1"
+            >
+              Statistical validation of peptide identifications in OpenMS
+            </a>
+          </span>
+          <span>
+            <a
+              class="list-group-item list-group-item-action no-style"
+              href="#heading-1-2"
+            >
+              An alternative state-of-the-art tool for PEP estimation
+            </a>
+          </span>
+          <span>
+            <a
+              class="list-group-item list-group-item-action no-style"
+              href="#heading-1-3"
+            >
+              Scope of this work
+            </a>
+          </span>
+        </div>
+        <span>
+          <a
+            class="list-group-item list-group-item-action no-style"
+            href="#heading-2"
+          >
+            Material and Methods
+          </a>
+        </span>
+        <span>
+          <a
+            class="list-group-item list-group-item-action no-style"
+            href="#heading-3"
+          >
+            Results
+          </a>
+        </span>
+        <div class="list-group list-group-l2 no-style">
+          <span>
+            <a
+              class="list-group-item list-group-item-action no-style"
+              href="#heading-3-1"
+            >
+              Percolator outperforms IDPEP
+            </a>
+          </span>
+          <span>
+            <a
+              class="list-group-item list-group-item-action no-style"
+              href="#heading-3-2"
+            >
+              Leveraging information across multiple sibling experiments
+              improves peptide identification
+            </a>
+          </span>
+          <div class="list-group list-group-l3 no-style">
+            <span>
+              <a
+                class="list-group-item list-group-item-action no-style"
+                href="#heading-3-2-1"
+              >
+                Novel Percolator features aggregate information from multiple
+                sibling experiments
+              </a>
+            </span>
+            <span>
+              <a
+                class="list-group-item list-group-item-action no-style"
+                href="#heading-3-2-2"
+              >
+                Peptide-based statistics improve Percolator's performance more
+                than precursor-based statistics
+              </a>
+            </span>
+          </div>
+        </div>
+        <span>
+          <a
+            class="list-group-item list-group-item-action no-style"
+            href="#heading-4"
+          >
+            Discussion and Outlook
+          </a>
+        </span>
+      </div>
+    </div>
+
+    <!-- Dynamic progress bar -->
+    <div class="progress">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        aria-valuenow="0"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
+
+    <div class="container">
+      <!-- Logo and social media links -->
+      <div class="logo-bar">
+        <a class="no-style" href="index.html">
+          <img
+            class="img-logo"
+            width="428"
+            height="428"
+            src="src/assets/img/memoji-428x428.png"
+            alt="Sophia's memoji"
+          />
+        </a>
+
+        <div class="brand-icon">
+          <a
+            class="no-style"
+            href="mailto:sophia.mersmann.blog@gmail.com"
+            target="_blank"
+            title="Mail"
+          >
+            <svg
+              class="svg-brand-icon"
+              width="100%"
+              height="100%"
+              role="img"
+              viewBox="0 0 512 512"
+            >
+              <path
+                fill="currentColor"
+                d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+
+        <div class="brand-icon">
+          <a
+            class="no-style"
+            href="https://github.com/sophiamersmann"
+            target="_blank"
+            title="GitHub"
+          >
+            <svg
+              class="svg-brand-icon"
+              width="100%"
+              height="100%"
+              role="img"
+              viewBox="0 0 496 512"
+            >
+              <path
+                fill="currentColor"
+                d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+
+        <div class="brand-icon">
+          <a
+            class="no-style"
+            href="https://twitter.com/sophiamersmann"
+            target="_blank"
+            title="Twitter"
+          >
+            <svg
+              class="svg-brand-icon"
+              width="100%"
+              height="100%"
+              role="img"
+              viewBox="0 0 512 512"
+            >
+              <path
+                fill="currentColor"
+                d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+
+        <div class="brand-icon">
+          <a
+            class="no-style"
+            href="https://observablehq.com/@sophiamersmann"
+            target="_blank"
+            title="Observable"
+          >
+            <svg
+              class="svg-brand-icon"
+              width="100%"
+              height="100%"
+              role="img"
+              viewBox="0 0 25 28"
+            >
+              <path
+                d="M12.5 22.6667C11.3458 22.6667 10.3458 22.4153 9.5 21.9127C8.65721 21.412 7.98339 20.7027 7.55521 19.8654C7.09997 18.9942 6.76672 18.0729 6.56354 17.1239C6.34796 16.0947 6.24294 15.0483 6.25 14C6.25 13.1699 6.30417 12.3764 6.41354 11.6176C6.52188 10.8598 6.72292 10.0894 7.01563 9.30748C7.30833 8.52555 7.68542 7.84763 8.14479 7.27274C8.62304 6.68378 9.24141 6.20438 9.95208 5.87163C10.6979 5.51244 11.5458 5.33333 12.5 5.33333C13.6542 5.33333 14.6542 5.58467 15.5 6.08733C16.3428 6.588 17.0166 7.29733 17.4448 8.13459C17.8969 8.99644 18.2271 9.9103 18.4365 10.8761C18.6448 11.841 18.75 12.883 18.75 14C18.75 14.8301 18.6958 15.6236 18.5865 16.3824C18.4699 17.1702 18.2639 17.9446 17.9719 18.6925C17.6698 19.4744 17.2948 20.1524 16.8427 20.7273C16.3906 21.3021 15.7927 21.7692 15.0479 22.1284C14.3031 22.4876 13.4542 22.6667 12.5 22.6667ZM14.7063 16.2945C15.304 15.6944 15.6365 14.864 15.625 14C15.625 13.1073 15.326 12.3425 14.7292 11.7055C14.1313 11.0685 13.3885 10.75 12.5 10.75C11.6115 10.75 10.8688 11.0685 10.2708 11.7055C9.68532 12.3123 9.36198 13.1405 9.375 14C9.375 14.8927 9.67396 15.6575 10.2708 16.2945C10.8688 16.9315 11.6115 17.25 12.5 17.25C13.3885 17.25 14.124 16.9315 14.7063 16.2945ZM12.5 27C19.4031 27 25 21.1792 25 14C25 6.82075 19.4031 1 12.5 1C5.59687 1 0 6.82075 0 14C0 21.1792 5.59687 27 12.5 27Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="content">
+        <hr class="article-separator" />
+
+        <article class="first">
+          <h1 id="heading-0">
+            Posterior Error Probability Estimation for Peptide Search Engine
+            Results in OpenMS
+          </h1>
+
+          <!-- Abstract -->
+          <p class="abstract">
+            Tandem mass spectrometry (MS/MS) is the standard technique for
+            protein identification and quantification. The first step in a
+            bottom-up shotgun MS/MS experiment typically involves enzymatic
+            digestion of the protein sample of interest, resulting in a complex
+            peptide mixture that is then subject to mass spectrometric analysis.
+            After searching and scoring the observed MS/MS spectra against a
+            protein database, it has become common practice to assign
+            statistical significance to peptide spectrum matches (PSMs), thereby
+            bypassing the need for arbitrarily chosen rigid score cutoffs when
+            determining a list of accepted PSMs. One state-of-the-art method for
+            postprocessing peptide search engine results is Percolator, which
+            estimates the probability for a peptide identification to be correct
+            - expressed as (posterior) error probability (PEP). However,
+            although in many MS-based proteomic studies a single peptide mixture
+            is analysed multiple times in replicate experiments, Percolator
+            processes MS runs individually and is thus blind to information from
+            sibling experiments. Encouraged by previous work showing that
+            naïvely combining individually analysed replicate MS runs improves
+            peptide inference, we here combine evidence across multiple sibling
+            experiments by designing novel Percolator features, which take into
+            account different precursor ion charge states and peptide
+            modifications. We find that leveraging information between replicate
+            MS runs increases the number of correctly identified PSMs by up to
+            22%, but has little impact on the peptide level. We make our work
+            publicly available by integrating the improved version of Percolator
+            into OpenMS, a popular open source C++ software platform for MS
+            analysis, replacing its current tool for PEP estimation after
+            proving Percolator's superiority (pending;
+            <a href="https://github.com/OpenMS/OpenMS/pull/3663" target="_blank"
+              >GitHub pull request</a
+            >).
+          </p>
+        </article>
+      </div>
+    </div>
+
+    <div class="banner">
+      <div class="container-wide">
+        <div class="meta">
+          <div>
+            <div class="meta-heading"><b>Author</b></div>
+            <div>
+              Sophia Mersmann<br />
+              as part of
+              <i>M.Sc. Bioinformatics and Theoretical Systems Biology</i><br />
+              at Imperial College London
+            </div>
+          </div>
+
+          <div>
+            <div class="meta-heading"><b>Supervisors</b></div>
+            <div>
+              Juliane Liepe<br />
+              Oliver Alka*<br />
+              Julianus Pfeuffer*<br />
+              Timo Sachsenberg*<br />
+              <small
+                >*from
+                <a href="https://www.openms.de/" target="_blank"
+                  >OpenMS</a
+                ></small
+              >
+            </div>
+          </div>
+
+          <div>
+            <div class="meta-heading"><b>Affiliations</b></div>
+            <div>
+              Imperial College London, UK<br />
+              Google Summer Of Code 2018 (<a
+                target="_blank"
+                href="https://summerofcode.withgoogle.com/archive/2018/projects/5921078421487616/"
+                >Project</a
+              >)
+            </div>
+          </div>
+
+          <div>
+            <div class="meta-heading"><b>Date</b></div>
+            <div>
+              submitted on <time datetime="2018-09-05">Sept 5, 2018</time><br />
+              published on <time datetime="2020-06-04">June 4, 2020</time>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content">
+        <article>
+          <h2 id="heading-1">Introduction</h2>
+
+          <p>
+            <strong
+              >OpenMS facilitates rapid development of complex mass
+              spectrometric workflows.</strong
+            >
+            Tandem mass spectrometry (MS/MS;
+            <span class="cite"
+              ><a class="no-style" href="#figure01">Fig. 1</a></span
+            >) is the <em>de facto</em> standard experimental method for
+            high-throughput protein identification and quantification
+            <span class="cite cite-ref"
+              >[<a class="no-style Aebersold2003" href="#Aebersold2003-ref"></a
+              >]</span
+            >. Analysis and interpretation of mass spectrometric (MS) data,
+            however, typically require a multitude of steps - from processing
+            raw experimental data over peptide to protein identification and
+            possibly quantification, often using several software tools and
+            various file formats
+            <span class="cite cite-ref"
+              >[<a class="no-style Sinitcyn2018" href="#Sinitcyn2018-ref"></a
+              >,<a class="no-style Noble2012" href="#Noble2012-ref"></a>,<a
+                class="no-style Mead2007"
+                href="#Mead2007-ref"
+              ></a
+              >,<a
+                class="no-style Matthiesen2007"
+                href="#Matthiesen2007-ref"
+              ></a
+              >]</span
+            >. To support researchers working with MS data, there has been a
+            tremendous effort to develop software applications that allow the
+            rapid development of easily reproducible mass spectrometric
+            pipelines by providing quick access to MS data processing and
+            analysis tools
+            <span class="cite cite-ref"
+              >[<a class="no-style Malm2014" href="#Malm2014-ref"></a>,<a
+                class="no-style Tyanova2016"
+                href="#Tyanova2016-ref"
+              ></a
+              >,<a class="no-style McIlwain2014" href="#McIlwain2014-ref"></a
+              >,<a class="no-style Deutsch2015" href="#Deutsch2015-ref"></a>,<a
+                class="no-style Rost2016"
+                href="#Rost2016-ref"
+              ></a
+              >]</span
+            >. One widely used software platform for MS data analysis is OpenMS,
+            an open-source software platform implemented in C++, which enables
+            users to conveniently develop complex quantitative mass
+            spectrometric workflows via a drag-and-drop scheme of application
+            nodes
+            <span class="cite cite-ref"
+              >[<a class="no-style Rost2016" href="#Rost2016-ref"></a>]</span
+            >.
+          </p>
+
+          <figure id="figure01">
+            <img
+              class="img-fluid"
+              width="526"
+              height="335"
+              src="src/assets/img/a01-fig01-526x335.svg"
+            />
+            <figcaption>
+              <strong>
+                <span class="caption-number">Figure 1:</span>
+                Schematic illustration of basic principles in tandem mass
+                spectrometry.
+              </strong>
+              <span class="caption-text">
+                Tandem mass spectrometry (MS/MS) accomplishes protein sequencing
+                by analysing ion masses twice in succession coupled through an
+                intermediate fragmentation stage. The first step of MS/MS
+                involves ionizing a sample of interest, thereby generating a
+                mixture of ions. The first mass analyser then selects and
+                isolates so-called precursor ions of a specific mass-to-charge
+                ratio (m/z) each representing a single peptide. After
+                fragmentation of the selected precursor ions, the second mass
+                analyser measures m/z values of the fragment ions produced from
+                a precursor ion. The acquired tandem mass spectra represent
+                characteristic "fingerprints" of peptides and can be further
+                analysed to obtain sequence information.
+              </span>
+            </figcaption>
+          </figure>
+
+          <p>
+            <strong
+              >Peptide identifications reported by search engines often miss a
+              notion of statistical significance.</strong
+            >
+            A common task in proteomics is to identify proteins in complex
+            biological mixtures. In a standard shotgun proteomics protocol, a
+            sample of unknown proteins is first digested by enzymes such as
+            Trypsin. The identification of peptides in the resulting mixture is
+            then a critical step in mass spectrometric pipelines (<span
+              class="cite"
+              ><a class="no-style" href="#figure02">Fig. 2</a></span
+            >). To this end, experimentally produced MS/MS spectra are typically
+            searched and scored against a database of theoretical spectra
+            constructed from peptides of known proteins. Since observed mass
+            spectra are subject to noise, finding an accurate mapping from an
+            observed to a theoretical spectrum is challenging. Peptide-spectrum
+            match (PSM) scores generally reflect the similarity of compared
+            spectra, regardless of the specific search engine used. However,
+            most PSM scores are not statistically sound. Assigning significance
+            to peptide identifications is thus crucial to validate and filter
+            PSMs. To this end, robust statistical models, that postprocess
+            search engine results, are needed to control the uncertainty in
+            peptide identifications.
+          </p>
+
+          <figure id="figure02">
+            <img
+              class="img-fluid"
+              width="317"
+              height="689"
+              src="src/assets/img/a01-fig02-317x689.svg"
+            />
+            <figcaption>
+              <strong>
+                <span class="caption-number">Figure 2:</span>
+                Schematic illustration of basic principles in tandem mass
+                spectrometry.
+              </strong>
+              <span class="caption-text">
+                Tandem mass spectrometry (MS/MS) accomplishes protein sequencing
+                by analysing ion masses twice in succession coupled through an
+                intermediate fragmentation stage. The first step of MS/MS
+                involves ionizing a sample of interest, thereby generating a
+                mixture of ions. The first mass analyser then selects and
+                isolates so-called precursor ions of a specific mass-to-charge
+                ratio (m/z) each representing a single peptide. After
+                fragmentation of the selected precursor ions, the second mass
+                analyser measures m/z values of the fragment ions produced from
+                a precursor ion. The acquired tandem mass spectra represent
+                characteristic "fingerprints" of peptides and can be further
+                analysed to obtain sequence information.
+              </span>
+            </figcaption>
+          </figure>
+
+          <h3 id="heading-1-1">
+            Statistical validation of peptide identifications in OpenMS
+          </h3>
+
+          <p>
+            <strong
+              >Posterior error probabilities quantify the uncertainty in
+              individual peptide identifications.</strong
+            >
+            Several statistical measures have been developed to quantify the
+            confidence in either a single or a set of peptide identifications
+            scored by a peptide search engine
+            <span class="cite cite-ref"
+              >[<a class="no-style Granholm2011" href="#Granholm2011-ref"></a
+              >]</span
+            >. In this work, we focus on situations in which one is interested
+            in the identification of individual proteins (rather than a set of
+            proteins); for example, when determining whether a certain protein
+            is expressed in a certain cell type under a certain set of
+            conditions. In OpenMS, an in-house tool called
+            IDPosteriorErrorProbability (IDPEP) is used to assign a confidence
+            measure to individual PSMs. IDPEP assumes PSM scores to be generated
+            by a mixture model composed of two distinct distributions, one for
+            correct and one for incorrect identifications. Described within a
+            Bayesian framework, the posterior probability that a specific
+            peptide assignment with score \(s\) is correct (denoted by \(+\))
+            can then be computed as \[ p(+|s) = \frac{p(s|+)p(+)}{p(s)} =
+            \frac{p(s|+)p(+)}{p(s|+)p(+) + p(s|-)p(-)}, \] where the likelihoods
+            \(p(s|+)\) and \(p(s|-)\) are expressed by a Gaussian and Gumbel
+            distribution, respectively. The model learns its parameters in an
+            unsupervised fashion using maximum likelihood estimation computed by
+            the expectation-maximization algorithm. The posterior error
+            probability (PEP) \(p(-|s) = 1 - p(+|s)\) then quantifies the
+            confidence in a single identified spectrum.
+          </p>
+
+          <p>
+            <strong
+              >OpenMS' tool for PEP estimation leaves room for
+              improvement.</strong
+            >
+            The described model currently implemented in OpenMS suffers from
+            several shortcomings. First, it is not guaranteed that PSM scores
+            follow the chosen parametric distributions. Finding appropriate
+            default score distributions that are applicable in the general case
+            proves to be difficult since these depend on the scoring algorithm
+            used
+            <span class="cite cite-ref"
+              >[<a class="no-style Choi2008" href="#Choi2008-ref"></a>,<a
+                class="no-style Ma2012"
+                href="#Ma2012-ref"
+              ></a
+              >]</span
+            >. Secondly, only a single PSM score retrieved from a peptide search
+            algorithm is taken into account ignoring other valuable information
+            a search engine might return. The added information gained from
+            incorporating additional PSM scores as well as peptide properties
+            has been shown to result in improved performance
+            <span class="cite cite-ref"
+              >[<a class="no-style Ma2012" href="#Ma2012-ref"></a>,<a
+                class="no-style Keller2002"
+                href="#Keller2002-ref"
+              ></a
+              >,<a class="no-style Cox2008" href="#Cox2008-ref"></a>]</span
+            >. Addressing these shortcomings in OpenMS promises to lead to
+            improved PEP estimation for peptide search engine results.
+          </p>
+
+          <p>
+            <strong
+              >PeptideProphet: A family of sophisticated methods for accurate
+              PEP estimation.</strong
+            >
+            IDPEP is loosely based on a widely used empirical statistical model
+            to estimate the accuracy of peptide identifications called
+            PeptideProphet
+            <span class="cite cite-ref"
+              >[<a class="no-style Keller2002" href="#Keller2002-ref"></a
+              >]</span
+            >. Having evolved into a whole family of methods, PeptideProphet has
+            already proposed more sophisticated methods that address the
+            described limitations in OpenMS
+            <span class="cite cite-ref"
+              >[<a class="no-style Choi2008" href="#Choi2008-ref"></a>,<a
+                class="no-style Ma2012"
+                href="#Ma2012-ref"
+              ></a
+              >]</span
+            >. To overcome restrictive parametric forms of the mixture model,
+            Nesvizhskii and colleagues developed a variety of more flexible
+            probability models, all having strengths and limitations of their
+            own
+            <span class="cite cite-ref"
+              >[<a class="no-style Choi2008" href="#Choi2008-ref"></a>,<a
+                class="no-style Ma2012"
+                href="#Ma2012-ref"
+              ></a
+              >,<a class="no-style Choi2008a" href="#Choi2008a-ref"></a>,<a
+                class="no-style Renard2010"
+                href="#Renard2010-ref"
+              ></a
+              >]</span
+            >. Although shown to work reasonably well in the general case, some
+            suffer from potential overfitting
+            <span class="cite cite-ref"
+              >[<a class="no-style Ma2012" href="#Ma2012-ref"></a>]</span
+            >
+            while others are computationally demanding
+            <span class="cite cite-ref"
+              >[<a class="no-style Choi2008" href="#Choi2008-ref"></a>]</span
+            >. Furthermore, to incorporate more than a single score into the
+            model of PeptideProphet, Keller <em>et al.</em> first summarise
+            multiple quantities into a single entity preserving most of the
+            intrinsic information using linear discriminant analysis in a
+            supervised machine learning approach
+            <span class="cite cite-ref"
+              >[<a class="no-style Keller2002" href="#Keller2002-ref"></a
+              >]</span
+            >. There are, however, several difficulties in realizing this
+            approach. First, supervised training requires labelled high-quality
+            MS data of known proteins which is difficult to obtain. Secondly, a
+            pre-computed "fixed" discriminant function inferred from a specific
+            dataset might not generalize well to data collected under different
+            experimental conditions.
+          </p>
+
+          <h3 id="heading-1-2">
+            An alternative state-of-the-art tool for PEP estimation
+          </h3>
+
+          <p>
+            <strong
+              >Semi-supervised learning tailors PEP estimation to the mass
+              spectrometric data at hand.</strong
+            >
+            An interesting, alternative approach to quantify the confidence in
+            PSM scores has been proposed by Käll <em>et al.</em>
+            <span class="cite cite-ref"
+              >[<a class="no-style Kall2007" href="#Kall2007-ref"></a>,<a
+                class="no-style Spivak2009"
+                href="#Spivak2009-ref"
+              ></a
+              >,<a class="no-style The2016" href="#The2016-ref"></a>]</span
+            >. The general idea is to establish a semi-supervised machine
+            learning method that is dynamically trained on data of a particular
+            MS/MS experiment. This eliminates the need to construct manually
+            curated training sets, while tailoring the model to each specific
+            use case individually. Additionally, there is no need to specify
+            underlying parametric assumptions. To achieve this, a support vector
+            machine (SVM) called Percolator is iteratively trained on false
+            matches found in an artificially generated dataset of peptides known
+            to be incorrect (decoy dataset) and a subset of high-scoring PSMs
+            considered to be correct. The SVM then learns to discriminate
+            between correctly and incorrectly identified PSMs. Based on
+            Percolator scores, PEPs are estimated using non-parametric logistic
+            regression
+            <span class="cite cite-ref"
+              >[<a class="no-style Kall2008" href="#Kall2008-ref"></a>,<a
+                class="no-style Kall2009"
+                href="#Kall2009-ref"
+              ></a
+              >]</span
+            >.
+          </p>
+
+          <p>
+            <strong
+              >Enhancing Percolator's performance when a single protein sample
+              has been analysed multiple times.</strong
+            >
+            In an attempt to increase the number of statistically significant
+            peptides detected, previous work has mainly focused on combining
+            search results reported by different engines applied to the same set
+            of observed mass spectra
+            <span class="cite cite-ref"
+              >[<a
+                class="no-style Shteynberg2011"
+                href="#Shteynberg2011-ref"
+              ></a
+              >,<a class="no-style Jones2009" href="#Jones2009-ref"></a>,<a
+                class="no-style Wen2015"
+                href="#Wen2015-ref"
+              ></a
+              >,<a class="no-style Edwards2009" href="#Edwards2009-ref"></a>,<a
+                class="no-style Kwon2011"
+                href="#Kwon2011-ref"
+              ></a
+              >,<a class="no-style Searle2008" href="#Searle2008-ref"></a
+              >]</span
+            >. However, it has become common practice to analyse a protein
+            sample of interest multiple times via replicate MS runs
+            <span class="cite cite-ref"
+              >[<a class="no-style Li2009" href="#Li2009-ref"></a>,<a
+                class="no-style Isserlin2008"
+                href="#Isserlin2008-ref"
+              ></a
+              >]</span
+            >, thereby generating highly overlapping datasets used to, for
+            example, reconstruct protein interaction networks
+            <span class="cite cite-ref"
+              >[<a class="no-style Sowa2009" href="#Sowa2009-ref"></a>,<a
+                class="no-style Breitkreutz2010"
+                href="#Breitkreutz2010-ref"
+              ></a
+              >]</span
+            >
+            or characterise proteomes of model organisms
+            <span class="cite cite-ref"
+              >[<a class="no-style Brunner2007" href="#Brunner2007-ref"></a>,<a
+                class="no-style Baerenfaller2008"
+                href="#Baerenfaller2008-ref"
+              ></a
+              >,<a class="no-style DeGodoy2008" href="#DeGodoy2008-ref"></a
+              >]</span
+            >. Naïvely, replicate datasets can be analysed individually before
+            combining reported results in the final step of a protocol (e.g. by
+            considering the union or intersection of peptides detected in
+            different runs). Even though taking into account replicate runs has
+            been shown to improve peptide inference
+            <span class="cite cite-ref"
+              >[<a class="no-style Liu2004" href="#Liu2004-ref"></a>,<a
+                class="no-style Resing2004"
+                href="#Resing2004-ref"
+              ></a
+              >,<a class="no-style Elias2005" href="#Elias2005-ref"></a>]</span
+            >, there has been little work to <em>leverage</em> information
+            between replicate runs when estimating PEPs
+            <span class="cite cite-ref"
+              >[<a
+                class="no-style Shteynberg2011"
+                href="#Shteynberg2011-ref"
+              ></a
+              >,<a class="no-style Griffin2010" href="#Griffin2010-ref"></a
+              >]</span
+            >. A notable exception is iProphet, which refines an initial
+            PeptideProphet analysis by using information available from highly
+            overlapping datasets
+            <span class="cite cite-ref"
+              >[<a
+                class="no-style Shteynberg2011"
+                href="#Shteynberg2011-ref"
+              ></a
+              >]</span
+            >. We here expand on Percolator by encoding novel features that
+            combine evidence across replicate runs for a protein sample that has
+            been analysed multiple times.
+          </p>
+
+          <h3 id="heading-1-3">Scope of this work</h3>
+
+          <p>
+            <strong>Improve PEP estimation in OpenMS.</strong>
+            Since IDPEP has not yet been tested thoroughly - even though it is
+            already fully supported by OpenMS - we, firstly, assess IDPEP's
+            ability to accurately estimate PEPs using a rich dataset of known
+            ground truth. To ensure our findings are valid across various mass
+            spectrometric workflows, we evaluate IDPEP in combination with a
+            range of popular peptide search engines including X!Tandem
+            <span class="cite cite-ref"
+              >[<a class="no-style Craig2004" href="#Craig2004-ref"></a>]</span
+            >, MS-GF+
+            <span class="cite cite-ref"
+              >[<a class="no-style Kim2014" href="#Kim2014-ref"></a>]</span
+            >, and Comet
+            <span class="cite cite-ref"
+              >[<a class="no-style Eng2013" href="#Eng2013-ref"></a>]</span
+            >. Secondly, we compare IDPEP with Percolator with the intent to
+            replace the former by the latter in OpenMS (in case of superior
+            performance). Finally, we aim to improve Percolator's performance
+            when a protein sample has been analysed multiple times by combining
+            evidence across replicate runs, encoded as novel Percolator
+            features, which take into account different precursor ion charge
+            states and peptide modifications.
+          </p>
+
+          <h2 id="heading-2">Material and Methods</h2>
+
+          <p>
+            <strong>Experimental data.</strong>
+            For evaluation purposes, we use MS data produced and published by
+            The Proteome Informatics Research Group (iPRG) for the iPRG
+            2016/2017 study "Inferring Proteoforms from Bottom-up Proteomics
+            Data"
+            <span class="cite cite-ref"
+              >[<a class="no-style The2018" href="#The2018-ref"></a>,<a
+                class="no-style Lee2018"
+                href="#Lee2018-ref"
+              ></a
+              >]</span
+            >. For the study, different combinations of partially overlapping
+            oligopeptides (protein epitope signature tags (PrESTs)) were spiked
+            into a constant background of E. Coli proteins after tryptic
+            digestion, resulting in four distinctive samples: mixture A+B (383
+            PrESTs), mixture A (192 PrESTs), mixture B (191 PrESTs), and a
+            "blank" sample containing background proteins only. Mixture A+B
+            contains partially overlapping peptides whereas mixtures A and B do
+            not. In addition to raw experimental MS data, iPRG published a
+            database compromised of 5592 entries to search experimental spectra
+            against. The dataset contains the 383 target PrESTs present in the
+            samples, a set of 1000 PrEST-like entrapment sequences absent from
+            the samples, and other E. Coli proteins. Each sample was analysed in
+            triplicates by liquid chromatography-MS/MS using higher-energy
+            collisional dissociation (HCD) on a Q Exactive Orbitrap mass
+            spectrometer. In this study, computational analysis is conducted
+            using mixtures A+B, A and B; the blank mixture is ignored due to the
+            lack of true positives.
+          </p>
+
+          <p>
+            <strong>Peptide search engines.</strong>
+            After conversion of the given raw experimental data to mzML format
+            using a conversion tool provided in the ProteoWizard Toolkit
+            <span class="cite cite-ref"
+              >[<a class="no-style Chambers2012" href="#Chambers2012-ref"></a
+              >]</span
+            >, experimental spectra were searched against the iPRG dataset using
+            peptide search engines X!Tandem (release VENGEANCE (2015.12.15))
+            <span class="cite cite-ref"
+              >[<a class="no-style Craig2004" href="#Craig2004-ref"></a>]</span
+            >, MS-GF+ (version v20180130)
+            <span class="cite cite-ref"
+              >[<a class="no-style Kim2014" href="#Kim2014-ref"></a>]</span
+            >, and Comet (version 2016013)
+            <span class="cite cite-ref"
+              >[<a class="no-style Eng2013" href="#Eng2013-ref"></a>]</span
+            >. All three search engines considered semi-tryptic peptides only
+            and were constrained to a precursor ion mass tolerance of 15ppm that
+            has been shown to be optimal for Orbitrap machines
+            <span class="cite cite-ref"
+              >[<a class="no-style Yu2016" href="#Yu2016-ref"></a>]</span
+            >. For MS-GF+, the experimental set up was mirrored in the parameter
+            settings by specifying the instrument (Q Exactive Orbitrap) and
+            fragmentation method (HCD) used. The remaining parameters were left
+            to their defaults. All engines were run in OpenMS (version 2.4).
+          </p>
+
+          <p>
+            <strong>Decoy database and search strategy.</strong>
+            For each dataset, experimental spectra were searched against the
+            iPRG database and a decoy dataset in a separate target-decoy search
+            strategy. The decoy dataset was derived from the target database
+            simply by reversing each protein sequence.
+          </p>
+
+          <p>
+            <strong>PEP estimation.</strong>
+            IDPEP and Percolator (version 3.2) were both run in OpenMS (version
+            2.4), all parameters were left to their defaults.
+          </p>
+
+          <p>
+            <strong>Statistics.</strong>
+            For comparison of distributions we used either the
+            Kolmogorov-Smirnov (KS) test statistic (when one of the
+            distributions was empirical) or the two-sample KS test (when both
+            tested distributions were empirical). All statistical tests were
+            conducted at a confidence level of 5%.
+          </p>
+
+          <h2 id="heading-3">Results</h2>
+
+          <h3 id="heading-3-1">Percolator outperforms IDPEP</h3>
+
+          <p>
+            OpenMS' in-house tool IDPEP does not meet the latest developments of
+            state-of-the-art methods for PEP estimation, and has been noticed to
+            behave unreliably in practice. In an attempt to find a suitable
+            replacement, we compare IDPEP with a modern widely-used method for
+            PEP estimation, called Percolator
+            <span class="cite cite-ref"
+              >[<a class="no-style Kall2007" href="#Kall2007-ref"></a>,<a
+                class="no-style Spivak2009"
+                href="#Spivak2009-ref"
+              ></a
+              >,<a class="no-style The2016" href="#The2016-ref"></a>]</span
+            >, using experimental data from three protein mixtures (á three
+            technical replicates) in combination with three popular peptide
+            search engines (X!Tandem
+            <span class="cite cite-ref"
+              >[<a class="no-style Craig2004" href="#Craig2004-ref"></a>]</span
+            >, MS-GF+
+            <span class="cite cite-ref"
+              >[<a class="no-style Kim2014" href="#Kim2014-ref"></a>]</span
+            >, and Comet
+            <span class="cite cite-ref"
+              >[<a class="no-style Eng2013" href="#Eng2013-ref"></a>]</span
+            >).
+          </p>
+
+          <p>
+            <strong
+              >Peptide search engines rank detected PSMs according to a custom
+              scoring scheme, thereby providing a starting point for PEP
+              estimation tools.</strong
+            >
+            Although the comparison of search engine performance is not the
+            focus of this work, we here provide a brief overview of their
+            performances which, we believe, makes it easier for the reader to
+            comprehend the subsequent analysis. In a typical database-centred
+            protein identification protocol, the first step involves searching
+            experimental spectra against a set of peptides using a preferred
+            search engine. Scoring schemes employed by search engines to map
+            observed spectra to peptides are diverse, and so are the resulting
+            match rankings, usually spanning from promising, high-scoring to
+            low-scoring, potentially incorrect identifications. Applied to the
+            iPRG2016 study dataset, we find that Comet and MS-GF+ produce
+            rankings that are stable across all analysed samples (<span
+              class="cite"
+              ><a class="no-style" href="#figure03-anchor">Fig. 3</a></span
+            >). In particular, Comet tends to separate correct from incorrect
+            PSMs more clearly than MS-GF+. X!Tandem, however, exhibits unstable
+            behaviour; for one replicate of each protein mixture, X!Tandem
+            assigns scores to PSMs whose distributions, when divided into
+            correct and incorrect matches, are nearly identical (KS distances
+            &lt; 0.12;
+            <span class="cite"
+              ><a class="no-style" href="#figure03-anchor">Fig. 3</a></span
+            >). Furthermore, regardless of the search engine used, mixture A+B
+            tends to be the most challenging to score accurately, followed by
+            the individual mixtures A and B. Search results reported by an
+            engine are then fed to IDPEP or Percolator that aim to further
+            untangle correct from incorrect PSMs by estimating the confidence in
+            identified PSMs.
+          </p>
+        </article>
+      </div>
+    </div>
+
+    <div id="figure03-anchor" class="banner">
+      <div class="container">
+        <div class="content">
+          <article>
+            <!-- KS figure with distributions -->
+            <figure id="figure03" class="plot">
+              <div id="figure03-B" class="right figure0307-B"></div>
+              <div id="figure03-A" class="single figure0307-A"></div>
+              <figcaption>
+                <strong>
+                  <span class="caption-number">Figure 3:</span>
+                  Discrimination of correct and incorrect peptide
+                  identifications by search engines X!Tandem, MS-GF+ and Comet.
+                </strong>
+                <span class="caption-text">
+                  To investigate an engine's ability to distinguish correct from
+                  incorrect identifications, we inspect the Kolmogorov-Smirnov
+                  (KS) distance between score distributions of correct and
+                  incorrect identifications (left). All measured KS distances
+                  are found to be significant except the three outliers recorded
+                  for X!Tandem (KS test, p-value &lt; 0.0001). Each plotted dot
+                  corresponds to a single replicate experiment of a protein
+                  mixture that was processed by a particular search engine.
+                  <span class="hide-when-small"
+                    >For each of the plotted KS distances, the underlying
+                    distributions are shown (right).</span
+                  >
+                </span>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <article class="content">
+        <p>
+          <strong
+            >Broken assumptions underlying IDPEP contribute to unsuccessful
+            fitting.</strong
+          >
+          Noticeably, IDPEP fails to fit its proposed mixture model to any
+          search engine result regarding protein mixture A+B. Mixture A+B
+          differs from the other mixtures by containing partially overlapping
+          peptides whose pairwise similarity makes accurate peptide-spectrum
+          mapping harder. However, we find that none of the engine score
+          distributions meets the parametric assumptions underlying IDPEP -
+          neither for mixture A+B nor for mixtures A or B (KS test, p-value &lt;
+          0.0001). Hence, none of the distributions of correct and incorrect
+          matches resemble a Gaussian or Gumbel distribution, respectively, to a
+          significant degree. In the particular case of protein mixture A+B, the
+          score distributions of incorrect identifications deviate more strongly
+          from the assumed Gumbel distribution than those for the individual
+          mixtures (difference in KS distance: 0.01 (MS-GF+), 0.02 (Comet), 0.04
+          (X!Tandem)). In fact, the deviation seems to be significant enough to
+          prevent successful fitting. In contrast, Percolator demonstrates its
+          ability to handle challenging cases for which IDPEP fails, such as
+          mixture A+B. Since pinpointing incorrect matches seems to be a
+          limiting factor, this might be explained by the fact that Percolator
+          exploits decoy searches, a common technique in the field to learn from
+          identifications known to be incorrect.
+        </p>
+
+        <p>
+          <strong
+            >Percolator correctly identifies a higher number of PSMs than IDPEP
+            while picking up less false positives.</strong
+          >
+          For search engines MS-GF+ and Comet (X!Tandem results are discussed
+          separately), Percolator correctly identifies more PSMs than IDPEP
+          (<span class="cite"
+            ><a class="no-style" href="#figure04-anchor">Fig. 4</a></span
+          >, left). Moreover, improved receiver operating characteristic (ROC)
+          area under the curve (AUC) values (improvement of 0.03-0.05;
+          <span class="cite"
+            ><a class="no-style" href="#figure04-anchor">Fig. 4</a></span
+          >, right) ensure that higher numbers of correct identifications do not
+          come at the cost of increased numbers of false positives. In
+          particular, we find that Percolator's improvement over IDPEP is
+          greater for search engine results produced by MS-GF+ than Comet
+          (average percentage change at constant PEP threshold 0.01: 16.6%
+          (MS-GF+), 6.3% (Comet)). Since MS-GF+'s main score, as discussed
+          earlier, discriminates less clearly between correct and incorrect
+          identifications than Comet's score (<span class="cite"
+            ><a class="no-style" href="#figure03-anchor">Fig. 3</a></span
+          >), processing MS-GF+ results is more demanding for IDPEP which, in
+          turn, leaves more room for improvement to Percolator.
+        </p>
+      </article>
+    </div>
+
+    <div id="figure04-anchor" class="banner">
+      <div class="container">
+        <div class="content">
+          <article>
+            <!-- KS figure with distributions -->
+            <figure id="figure04" class="plot figure0406">
+              <div id="figure04-A">
+                <div class="super-title">
+                  <b class="title-percolator">Percolator</b>
+                  vs
+                  <b class="title-idpep">IDPEP</b>
+                </div>
+              </div>
+              <figcaption>
+                <strong>
+                  <span class="caption-number">Figure 4:</span>
+                  IDPEP's and Percolator's performance for search engines MS-GF+
+                  and Comet.
+                </strong>
+                <span class="caption-text">
+                  The number of correct peptide to spectrum matches (PSMs) with
+                  posterior error probabilities (PEPs) below some threshold
+                  (left) are consistently higher for Percolator (blue) than for
+                  IDPEP (orange), regardless of the search engine used. For each
+                  protein mixture, PSM counts are averaged over all respective
+                  replicates: Solid lines represent the mean and translucent
+                  bands the standard deviation. Receiver operating
+                  characteristic (ROC) curves are shown on the right. Percolator
+                  outperforms IDPEP by ROC area under the curve (ROC-AUC)
+                  improvements ranging from 0.03 to 0.05. Mixture A+B is not
+                  shown since a comparison is not possible as IDPEP failed to
+                  fit its model to the data.
+                </span>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <article class="content">
+        <p>
+          <strong
+            >A peek under the hood: Percolator's interior scoring scheme
+            significantly discriminates correct from incorrect PSMs.
+          </strong>
+          Percolator tackles PEP estimation by applying non-parametric logistic
+          regression to re-evaluated PSMs scored by its SVM. Ideally, correct
+          and incorrect identifications are assigned positive and negative
+          scores, respectively. For experimental spectra preprocessed by MS-GF+
+          and Comet, incorrect identifications clearly peak below zero whereas
+          the majority of correct identifications lie in the positive range
+          (<span class="cite"
+            ><a class="no-style" href="#figure05-anchor">Fig. 5</a></span
+          >). Furthermore, we find that all pairwise empirical distributions of
+          correct and incorrect identifications are statistically different from
+          each other (KS test, p-value &lt; 0.0001). Hence, Percolator
+          effectively untangles correct from incorrect PSMs identified by search
+          engines MS-GF+ or Comet.
+        </p>
+      </article>
+    </div>
+
+    <div id="figure05-anchor" class="banner">
+      <div class="container">
+        <div class="content">
+          <article>
+            <!-- Distributions of Percolator's internal score -->
+            <figure id="figure05" class="plot">
+              <div class="title">
+                Internal scores of <strong>Percolator</strong> applied to
+                <select class="select-mixture">
+                  <option value="A">Mixture A</option>
+                  <option value="B">Mixture B</option>
+                  <option value="A+B">Mixture A+B</option>
+                </select>
+              </div>
+              <div class="plot-pair">
+                <div id="figure05-A"></div>
+                <div id="figure05-B"></div>
+              </div>
+              <figcaption>
+                <strong>
+                  <span class="caption-number">Figure 5:</span>
+                  Distributions of Percolator's interior score for correct and
+                  incorrect peptide identifications.
+                </strong>
+                <span class="caption-text">
+                  When postprocessing search results obtained from MS-GF+
+                  (right) or Comet (left), Percolator primarily assigns negative
+                  scores to incorrect peptide identifications (light gold) while
+                  the majority of correct identifications (gold) lie in the
+                  positive range.
+                </span>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <article class="content">
+        <p>
+          <strong
+            >When presented with challenging input data, Percolator's
+            performance is more stable than IDPEP's.</strong
+          >
+          As noted earlier, X!Tandem's ability to discriminate correct from
+          incorrect identifications is limited when compared to MS-GF+ and
+          Comet. Consequently, postprocessing X!Tandem's search results is more
+          challenging for PEP estimation methods. In fact, IDPEP and Percolator
+          both exhibit unstable behaviour when presented with data preprocessed
+          by X!Tandem. However, IDPEP either entirely fails to fit its model to
+          the data (e.g. mixture A+B, as discussed earlier) or results in fits
+          that are so conservative that no correct PSMs are found at PEP
+          thresholds 0.01 or 0.05, both commonly used in practice (<span
+            class="cite"
+            ><a class="no-style" href="#figure06-anchor">Fig. 6</a></span
+          >, left). Percolator, on the contrary, performs "normally" for two out
+          of three replicates for each sample, and produces results out of the
+          ordinary for a single replicate only (<span class="cite"
+            ><a class="no-style" href="#figure06-anchor">Fig. 6</a></span
+          >, bottom). However, the wealth of detected true positives is punished
+          by a considerably increased number of false positives, with ROC-AUC
+          values dropping by more than 20% (from 0.83-0.86 to 0.60-0.62;
+          <span class="cite"
+            ><a class="no-style" href="#figure06-anchor">Fig. 6</a></span
+          >). Picking up high numbers of false positives when presented with
+          challenging data might be rooted in its iterative refinement of
+          correct PSMs: If the employed semi-supervised training starts with a
+          poor set of potentially correct identifications as positive examples,
+          then an iterative refinement procedure tends to result in picking up
+          more false PSMs each round. In practice, however, even though
+          Percolator performs poorly for one replicate, it still provides the
+          user with accurate PEPs from the remaining replicates, whereas IDPEP
+          does not return PEPs that are usable in real-world scenarios.
+        </p>
+      </article>
+    </div>
+
+    <div id="figure06-anchor" class="banner">
+      <div class="container">
+        <div class="content">
+          <article>
+            <figure id="figure06" class="plot figure0406">
+              <div id="figure06-A">
+                <div class="super-title">
+                  <b class="title-percolator">Percolator</b>
+                  vs
+                  <b class="title-idpep">IDPEP</b>
+                </div>
+              </div>
+              <figcaption>
+                <strong>
+                  <span class="caption-number">Figure 6:</span>
+                  IDPEP’s and Percolator’s performance for search engine
+                  X!Tandem.
+                </strong>
+                <span class="caption-text">
+                  The number of correct peptide to spectrum matches (PSMs) with
+                  posterior error probabilities (PEPs) below some threshold
+                  (left) are consistently higher for Percolator (blue) than for
+                  IDPEP (orange). In fact, IDPEP performs so poorly for all
+                  replicates of protein mixtures A and B that produced PEPs are
+                  virtually unusable. Receiver operating characteristic (ROC)
+                  curves are shown on the right. Percolator outperforms IDPEP by
+                  ROC area under the curve (ROC-AUC) improvements ranging from
+                  0.05 to 0.08. Mixture A+B is not shown since a comparison is
+                  not possible as IDPEP failed to fit its model to the data.
+                </span>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <article class="content">
+        <h3 id="heading-3-2">
+          Leveraging information across multiple sibling experiments improves
+          peptide identification
+        </h3>
+
+        <p>
+          After showing Percolator's superiority over IDPEP, the second aim of
+          this work is to effectively utilise information from multiple MS
+          experiments that analyse the same protein sample. Since Percolator is
+          a machine learning approach with an SVM at its core, integrating new
+          information is straightforward as it simply requires to define
+          additional features. Inspired by work that has been done by Shteynberg
+          <em>et al.</em> in iProphet
+          <span class="cite cite-ref"
+            >[<a class="no-style Shteynberg2011" href="#Shteynberg2011-ref"></a
+            >]</span
+          >, we here introduce five novel Percolator features that are computed
+          across multiple replicate experiments of a given protein sample. In
+          this section, we first motivate and describe each feature, and then
+          analyse their impact on peptide inference.
+        </p>
+
+        <h4 id="heading-3-2-1">
+          Novel Percolator features aggregate information from multiple sibling
+          experiments
+        </h4>
+
+        <p>
+          The proposed features build on a common assumption: If a particular
+          peptide is identified in multiple experiments, it is more likely to be
+          correct. Based on replicate "sibling" experiments, the introduced
+          features (hereinafter referred to as "sibling features") can be
+          divided into two groups: Peptide-based features require sibling PSMs
+          simply to share a common (modified or unmodified) peptide sequence,
+          whereas precursor-based features enforce sibling PSMs to not only
+          share a common peptide but also a common precursor ion (summarised in
+          <span class="cite"
+            ><a class="no-style" href="#table01">Table 1</a></span
+          >).
+        </p>
+
+        <figure id="table01" class="fig-table">
+          <figcaption>
+            <strong>
+              <span class="caption-number">Table 1:</span>
+              Brief summary of sibling features.
+            </strong>
+            <span class="caption-text">
+              Note that a grey dot does not mean that the respective condition
+              cannot occur; it simply means that it is not enforced.
+            </span>
+          </figcaption>
+          <table class="table-rotate">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th class="rotate">
+                  <div>Sibling Scores</div>
+                </th>
+                <th class="rotate">
+                  <div>Sibling Modifications</div>
+                </th>
+                <th class="rotate">
+                  <div>Sibling Ions</div>
+                </th>
+                <th class="rotate">
+                  <div>Precursor Scores</div>
+                </th>
+                <th class="rotate">
+                  <div>Replicate Spectra</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th rowspan="4">Sibling PSMs possess...</th>
+                <td>...a common peptide</td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+              </tr>
+              <tr>
+                <td>...a common precursor ion</td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+              </tr>
+              <tr>
+                <td>...different modifications</td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+              </tr>
+              <tr>
+                <td>...a different charge state</td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-positive"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+                <td><span class="dot dot-negative"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+
+        <p>
+          <strong
+            >Peptide-based sibling features track a single peptide across
+            multiple datasets.</strong
+          >
+          Peptide-based features build on the assumption that multiple
+          identifications of the same peptide across several experiments are
+          more likely to be a signal from the underlying truth than to be an
+          accumulation of random matches coincidentally detecting the same
+          peptide. For a particular PSM, that intuition is captured by summing
+          over the engine's main score of top-scoring PSMs referring to the same
+          peptide found in sibling experiments (<em>Sibling Scores</em>). The
+          chemical or post-translational modification of a peptide is ignored.
+          Hence, <em>Sibling Scores</em> penalise peptides that are either found
+          in very few experiments only or are assigned low scores in several
+          experiments, while pulling up peptides with high scores in many
+          experiments. Furthermore, we define two variations of
+          <em>Sibling Scores</em>, called <em>Sibling Modifications</em> and
+          <em>Sibling Ions</em>, that reward peptides with different mass
+          modifications and ion charges, respectively. Analogous to
+          <em>Sibling Scores</em>, the two variations are defined as the sum
+          over the engine's main score of top-scoring hits in sibling
+          experiments with the additional constraint of showing a different
+          modification or being identified by precursors with different ion
+          charge.
+        </p>
+
+        <p>
+          <strong
+            >Precursor-based sibling features model multiple identifications of
+            the same precursor ion.</strong
+          >
+          For this set of features, we assume that a particular precursor ion
+          observed in multiple experiments is more likely to be correct. Hence,
+          precursor-based statistics require sibling PSMs not only to share a
+          common peptide but also to agree on the particular precursor ion that
+          was matched to that peptide. For any given PSM, the
+          <em>Precursor Score</em> sums over the engine's main score of all hits
+          in sibling runs that share the same peptide (modification ignored) and
+          precursor ion. Note that this feature, as opposed to peptide-based
+          features, is not constrained to top-scoring hits only but picks up
+          every sibling PSM detected. Two PSMs are defined to refer to the same
+          precursor ion if all of the following conditions hold true: (i) the
+          mass-to-charge ratios are within a 10ppm mass tolerance, (ii) the
+          precursor ion's charge is identical, and (iii) the retention times are
+          within a 1200s tolerance. Additionally, we introduce another statistic
+          called <em>Replicate Spectra</em> that applies the same idea within a
+          single dataset, i.e. <em>Replicate Spectra</em> is computed for each
+          experiment individually and as such, strictly speaking, does not
+          belong to the family of sibling features.
+        </p>
+
+        <h4 id="heading-3-2-2">
+          Peptide-based statistics improve Percolator's performance more than
+          precursor-based statistics
+        </h4>
+
+        <p>
+          <strong
+            >Sibling statistics assign higher scores to correctly identified
+            peptides than peptides absent from a protein sample.</strong
+          >
+          Features fed to SVMs are most effective when they discriminate target
+          classes clearly - here, correct and incorrect identifications. In
+          order to investigate whether the proposed sibling features show that
+          behaviour, we compare the means of feature distributions for correct
+          and incorrect identifications across all datasets (<span class="cite"
+            ><a class="no-style" href="#figure07-anchor">Fig. 7</a></span
+          >). For fair comparison, each feature space has been transformed to
+          the (0,1)-interval using min-max normalization (for analysis purposes
+          only). For all statistics, correct peptide identifications are, on
+          average, assigned higher scores. However, peptide-based features
+          distinguish correct from incorrect identifications more clearly than
+          precursor-based features. Especially <em>Sibling Scores</em> and
+          <em>Sibling Ions</em> seem to be quite effective. Hence, finding
+          sibling PSMs with precursor ions of different charge state seems to be
+          more informative about the peptide's presence in a sample than finding
+          sibling PSMs with peptides of different modifications. Both
+          precursor-based features, on the other hand, seem to be less
+          successful at untangling correct and incorrect PSMs (e.g.
+          <em>Precursor Scores</em>). A major difference between peptide- and
+          precursor-based features is that peptide-based features take into
+          account top-scoring PSMs only whereas precursor-based features sum
+          over all PSMs found in a particular search engine run that meet the
+          defined criteria. We hypothesize that summing over many low-scoring
+          PSMs (i.e. likely to be incorrect) might result in false high scores.
+        </p>
+      </article>
+    </div>
+
+    <div id="figure07-anchor" class="banner">
+      <div class="container">
+        <div class="content">
+          <article>
+            <!-- Sibling statistics figure with distributions -->
+            <figure id="figure07" class="plot">
+              <div id="figure07-B" class="figure0307-B"></div>
+              <div id="figure07-A" class="figure0307-A"></div>
+              <figcaption>
+                <strong>
+                  <span class="caption-number">Figure 7:</span>
+                  Discrimination of correct and incorrect peptide
+                  identifications by sibling statistics.
+                </strong>
+                <span class="caption-text">
+                  To investigate the ability of the proposed sibling statistics
+                  to distinguish correct from incorrect peptide identifications,
+                  we inspect the difference of the means of feature values for
+                  correct and incorrect identifications. To be precise, we
+                  subtract the incorrect from the correct mean, i.e. positive
+                  values indicate that correct identifications are assigned
+                  higher scores on average. For fair comparison, all features
+                  have been min-max normalized prior to analysis.
+                </span>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <article class="content">
+        <p>
+          <strong
+            >Leveraging information between multiple technical replicates
+            increases the number of correct PSMs, but fails to detect higher
+            numbers of unique peptides.</strong
+          >
+          When compared to Percolator not using information gathered from
+          sibling experiments, we record a substantially higher number of
+          peptides and spectra correctly matched, at least for search engines
+          X!Tandem and Comet; in the case of MS-GF+, the gain is negligible
+          (data not shown). However, even though the number of correct PSMs is
+          increased, the unique set of correctly identified peptides remains
+          unchanged (data not shown). Intuitively, finding an increased number
+          of peptides that have already been identified is compatible with the
+          features' design as they favour high-scoring peptides.
+        </p>
+
+        <p>
+          <strong
+            >Most of the described performance improvement stems from
+            peptide-based features, whereas precursor-based features contribute
+            very little.</strong
+          >
+          To measure the degree of performance contribution of the proposed
+          sibling features, we record the drop in performance when removing a
+          single feature (or, more precisely, a set of features). To this end,
+          taking into account correlations between features becomes necessary
+          since information shared by two correlated features might still be
+          available to the SVM when only one of those features is dropped. Not
+          surprisingly, peptide- and precursor-based features are found to
+          represent separated feature groups that correlate stronger within
+          their respective group than with outsider features (<span class="cite"
+            ><a class="no-style" href="#figure08-anchor">Fig. 8</a></span
+          >). Notably, <em>Precursor Scores</em> and <em>Replicate Spectra</em>,
+          i.e. the precursor-based features, are strongly correlated, possibly
+          due to the fact that these are essentially based on the same statistic
+          applied to different but highly overlapping datasets. However,
+          precursor-based features seem to contribute very little to the
+          discrimination of correct and incorrect identifications (<span
+            class="cite"
+            ><a class="no-style" href="#table02">Table 2</a></span
+          >). When data was preprocessed with X!Tandem, integrating
+          precursor-based features even leads to a slight decline in performance
+          by 1.5%. In contrast, we find that leaving out peptide-based features
+          leads to a severe drop in performance for X!Tandem (14.6%) and Comet
+          (10.4%). In combination with MS-GF+, however, leveraging information
+          between experiments using peptide-based features contributes little to
+          improved performance. These findings highlight the difficulty of
+          developing statistics that are effective to a similar degree for a
+          range of search engines.
+        </p>
+
+        <figure id="table02" class="fig-table">
+          <figcaption>
+            <strong>
+              <span class="caption-number">Table 2:</span>
+              Contribution of peptide-based and precursor-based feature subsets
+              to Percolator's improved performance.
+            </strong>
+            <span class="caption-text">
+              For each search engine separately, we record the drop in
+              performance when one of the defined feature subsets is left out.
+              Drop in performance is measured as the percentage change in
+              correct PSMs at a constant PEP threshold of 0.01.
+            </span>
+          </figcaption>
+          <table>
+            <thead>
+              <tr>
+                <th>Features dropped</th>
+                <th>Peptide-based</th>
+                <th>Precursor-based</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>X!Tandem & Percolator</th>
+                <td>-14.6%</td>
+                <td>1.5%</td>
+              </tr>
+              <tr>
+                <th>MS-GF+ & Percolator</th>
+                <td>-0.3%</td>
+                <td>-1.2%</td>
+              </tr>
+              <tr>
+                <th>Comet & Percolator</th>
+                <td>-10.4%</td>
+                <td>-0.3%</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+      </article>
+    </div>
+
+    <div id="figure08-anchor" class="banner">
+      <div class="container">
+        <div class="content">
+          <article>
+            <!-- Feature Correlations -->
+            <figure id="figure08" class="plot">
+              <div id="figure08-A" class="single"></div>
+              <figcaption>
+                <strong>
+                  <span class="caption-number">Figure 8:</span>
+                  Pairwise correlations of all sibling features.
+                </strong>
+                <span class="caption-text">
+                  The correlation matrix depicts measured Pearson correlation
+                  coeffiecients between all possible feature pairs.
+                  Peptide-based and precursor ion-based features are found to
+                  correlate more strongly within their respective group (yellow
+                  boxes).
+                </span>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <article class="content">
+        <h2 id="heading-4">Discussion and Outlook</h2>
+
+        <p>
+          <strong>IDPEP versus Percolator.</strong>
+          In this work, we have conducted an in-depth analysis of IDPEP, the PEP
+          estimation tool currently implemented in OpenMS
+          <span class="cite cite-ref"
+            >[<a class="no-style Rost2016" href="#Rost2016-ref"></a>]</span
+          >. Using a dataset of known ground truth, we have shown that the
+          parametric assumptions underlying IDPEP's mixture model are not
+          satisfied when used in combination with three popular peptide search
+          engines (X!Tandem
+          <span class="cite cite-ref"
+            >[<a class="no-style Craig2004" href="#Craig2004-ref"></a>]</span
+          >, MS-GF+
+          <span class="cite cite-ref"
+            >[<a class="no-style Kim2014" href="#Kim2014-ref"></a>]</span
+          >, and Comet
+          <span class="cite cite-ref"
+            >[<a class="no-style Eng2013" href="#Eng2013-ref"></a>]</span
+          >). In severe cases, IDPEP's heavy reliance on the engine's ability to
+          sufficiently distinguish correct from incorrect identifications leads
+          to unsuccessful or bad fitting, thereby returning a list of PEPs that
+          is virtually unusable. Furthermore, Percolator
+          <span class="cite cite-ref"
+            >[<a class="no-style Kall2007" href="#Kall2007-ref"></a>,<a
+              class="no-style Spivak2009"
+              href="#Spivak2009-ref"
+            ></a
+            >,<a class="no-style The2016" href="#The2016-ref"></a>]</span
+          >
+          has been shown to consistently outperform IDPEP over all analysed
+          datasets and search engines considered. Encouraged by its robustness
+          and reliability, Percolator has subsequently been integrated into the
+          OpenMS framework substituting IDPEP as default PEP estimation tool.
+          We, therefore, provide easy access to Percolator and enable users
+          within the OpenMS community to easily integrate Percolator into their
+          mass spectrometric workflows.
+        </p>
+
+        <p>
+          <strong
+            >Replicate MS experiments improve peptide identification.</strong
+          >
+          The second part of this work focused on improving PEP estimation by
+          leveraging information between replicate runs in cases where a single
+          protein sample has been analysed multiple times. To this end, we
+          proposed novel Percolator features based on shared peptides or
+          precursor ions between PSMs reported by different database searches of
+          the same engine. For two out of three search engines, X!Tandem and
+          Comet, peptide-based features have been shown to greatly increase the
+          number of PSMs correctly identified. Especially features
+          <em>Sibling Scores</em> and <em>Sibling Ions</em> showed high
+          discriminative power (with respect to correct and incorrect
+          identifications) which is in accordance with findings regarding
+          iProphet, a tool using similar sibling statistics
+          <span class="cite cite-ref"
+            >[<a class="no-style Shteynberg2011" href="#Shteynberg2011-ref"></a
+            >]</span
+          >. In contrast, while iProphet reports an increase in correct PSMs at
+          a constant false discovery rate when accounting for precursor
+          identical PSMs, we here find little contribution of those features
+          towards Percolator's improved performance. However, even though
+          iProphet's and our sibling statistics are similarly motivated, a
+          direct comparison is difficult since they are defined and implemented
+          in different ways and embedded in different frameworks.
+        </p>
+
+        <p>
+          <strong>Implicit bias towards high-abundance proteins.</strong>
+          Sibling features build on the general assumption that peptides
+          identified in multiple runs are more likely to be correct. This
+          assumption holds true when proteins of the same concentration are
+          spiked into a common background. However, mixtures often contain
+          proteins whose abundance might differ by magnitudes. In such cases,
+          especially when used in conjunction with data-dependent acquisition of
+          MS/MS spectra, the overlap of replicate runs is mostly restricted to
+          high-abundant proteins
+          <span class="cite cite-ref"
+            >[<a class="no-style Liu2004" href="#Liu2004-ref"></a>]</span
+          >. Consequently, sibling features might fail to pick up low-abundant
+          peptides. It is, therefore, essential to take mixture composition and
+          the technical approach used into consideration when deciding on a
+          strategy to deal with multiple replicate MS runs.
+        </p>
+
+        <p>
+          <strong
+            >Finding optimal Percolator configurations that are effective for a
+            wide range of mass spectrometric workflows is challenging.</strong
+          >
+          Even though leveraging information between replicate runs has been
+          shown to improve PSM identification, there is a discrepancy in its
+          effectiveness between different search engines used as preprocessors.
+          While X!Tandem and Comet combined with Percolator respond well to the
+          newly implemented features, there is little gain in the case of
+          MS-GF+. These findings highlight how the variety of search engines
+          that can be used upstream to Percolator complicate the problem of
+          developing a feature set that is universally effective. In view of the
+          complexity and variability of mass spectrometric workflows, a
+          one-fits-all configuration for Percolator might simply not exist.
+          However, Percolator can be easily adapted for use with a particular
+          search engine since integrating information is as simple as defining
+          new features. To effectively tailor the proposed features to a
+          particular search engine, one might consider taking into account more
+          than solely the engine's main score. Instead, one can use carefully
+          designed engine-specific functions distinguishing correct from
+          incorrect identifications as clearly as possible by combining various
+          bits of information an engine might return, similarly to what has been
+          done in PeptideProphet
+          <span class="cite cite-ref"
+            >[<a class="no-style Ma2012" href="#Ma2012-ref"></a>]</span
+          >. This approach might improve PEP estimation in the case of MS-GF+,
+          but might be beneficial in the case of other search engines as well.
+        </p>
+
+        <p>
+          <strong>From peptide to protein inference.</strong>
+          Peptide inference is a critical step in a shotgun proteomics pipeline.
+          However, in most cases, one is ultimately interested in protein
+          inference while peptide inference is more of a necessity due to the
+          shotgun approach used. In a typical mass spectrometric workflow,
+          protein inference is based on the unique set of peptides identified
+          from experimental spectra. In agreement with analysis results
+          regarding iProphet
+          <span class="cite cite-ref"
+            >[<a class="no-style Shteynberg2011" href="#Shteynberg2011-ref"></a
+            >]</span
+          >, sibling features failed to correctly identify a higher number of
+          unique peptides. However, even though it is not the common use case,
+          there are scenarios in which one is interested in identifying the
+          peptides itself, e.g. for identification of expressed sequence tags to
+          correct genome annotations
+          <span class="cite cite-ref"
+            >[<a class="no-style Desiere2004" href="#Desiere2004-ref"></a
+            >]</span
+          >, or for collection of proteomic data in, for example, the Peptide
+          Atlas database
+          <span class="cite cite-ref"
+            >[<a class="no-style Desiere2006" href="#Desiere2006-ref"></a
+            >]</span
+          >.
+        </p>
+
+        <p>
+          <strong
+            >Extension of the proposed framework to other highly overlapping
+            datasets generated using approaches different from simple experiment
+            replication.</strong
+          >
+          Essentially, simultaneously analysed MS datasets need to fulfil a
+          single condition only: They are required to refer to the same protein
+          sample, i.e. they are assumed to be observed evidence regarding the
+          same (unknown) truth. This holds true not only for technical
+          replicates of an experiment, as used in this study, but also for
+          datasets generated by, for example, analysing a sample multiple times
+          using a range of mass spectrometers, or by searching a set of observed
+          spectra from the same experiment against a common peptide database
+          using various peptide search engines. Regardless of the specific
+          technique used, the resulting datasets tend to be highly overlapping
+          while still offering some individual information
+          <span class="cite cite-ref"
+            >[<a class="no-style Elias2005" href="#Elias2005-ref"></a>]</span
+          >, and as such are suited for the proposed analysis leveraging
+          information between sibling datasets of PSMs. In the case of
+          replicates generated by different machines, Percolator extended by
+          sibling features can directly be applied. However, when using
+          different peptide search engines, one needs to be careful about
+          combining scores retrieved from different engines due to their
+          heterogeneity
+          <span class="cite cite-ref"
+            >[<a class="no-style Shteynberg2013" href="#Shteynberg2013-ref"></a
+            >]</span
+          >.
+        </p>
+
+        <div class="list-of-references">
+          <hr />
+        </div>
+      </article>
+    </div>
+  </body>
+</html>
